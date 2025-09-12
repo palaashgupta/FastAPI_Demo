@@ -7,7 +7,7 @@ app = FastAPI()
 
 ### Search OR Retrieve
 
-@app.get("/books") # describes hyperlink address
+@app.get("/books") 
 async def read_all_books(): 
     return BOOKS
 
