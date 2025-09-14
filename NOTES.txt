@@ -1,0 +1,52 @@
+NOTES:
+BASIC PROJECT:
+
+1. Use /docs after local host to get a better understanding and UI for all the hyperlinks
+2. Async is not really neccessary with fastapi
+3. Casefold is a stronger lower function which basically converts everything to lower value and works same as lower()
+4. In URL %20 means a space 
+5. In url specification if we use{} it creates path otherwie is we use / it creates a query
+6. Body from fastapi is used for POST which adds new data 
+7. PUT is used to Update data which utilises GET and POST together
+8. @app.get("/books") # describes hyperlink address
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+BASIC_VALIDATION PROJECT:
+
+1. we need some type of validation in Body during POST as without it we can add any arbiratory values, Validation helps keep the values in a domain and range.
+2. Pydantics: used for data modelling, parsing and efficient error handling.
+3. Makes it strict for parameters during insertion (POST)
+4. In post when we say book_request = Body() which mean book_request is Body object, instead we use book_request: BookRequest which means book_request is type of BookRequest
+5. in line    new_book = Book(**book_request.model_dump()):
+
+        model_dump is same as fixing dict: this basically means it fixes the dictionary andtype values as per BookRequest -> BaseModel from Pydantics
+
+        Here dict is depreciated based on new version of Pydantics.
+
+6. We add Field from Pydantics to create fileter or (domain and range) for each feature.
+
+EXAMPLE:  
+
+    id: int
+    title: str = Field(min_length =3)
+    author: str = Field(min_length=1)
+    description: str = Field(min_length=1,max_length = 100)
+    rating: int = Field(gt =0, lt = 6) 
+
+    this is done by Pydantics so keep a track of keywords used in Field
+
+7. When working with UPDATE (PUT) we do need to consider the exception that can come up as there might be a probability that the id yu want to update doesnt exist in the data, what should be done then? 
+Exceptions should always be covered 
+
+8. Path can be used to add parameter Validation in Get and Delete Functions which can be imported from fastapi same as Body, thsi cannot be done on Query.
+9. we can do same for Query using query from fastapi
+
+10. Status Codes: they are international standards on how a client/server should handle the results of a Request.
+        1xx series -> information response: request processing
+        2xx series -> Success
+        3xx series -> redirection: further action must be completed
+        4xx series -> Client errors: error was caused by client
+        5xx series -> Server Errors: an error occured on the server
+     
+     
+     raise HTTPException(status_code=404, detail = 'Item not Found') is used to raise errors, it can be imported from fastapi 
