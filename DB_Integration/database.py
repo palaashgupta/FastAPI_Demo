@@ -8,11 +8,11 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 ### PostgreSQL Database
-#SQL_ALCHEMY_DATABASE_URL = 'postgresql://postgres:Tutafuta%40123@localhost/TodopplicationDatabase' #PostgreSQL Database
+#SQL_ALCHEMY_DATABASE_URL = 'postgresql://postgres:#####%40123@localhost/TodopplicationDatabase' #PostgreSQL Database
 #engine = create_engine(SQL_ALCHEMY_DATABASE_URL) #PostgreSQL Database
 
 ### MySQL Database
-SQLALCHEMY_DATABASE_URL = 'mysql+pymysql://root:Tutafuta%40123@127.0.0.1:3306/todoapplicationdatabase' #MySQL Database
+SQLALCHEMY_DATABASE_URL = 'mysql+pymysql://root:####%40123@127.0.0.1:3306/todoapplicationdatabase' #MySQL Database
 engine = create_engine(SQLALCHEMY_DATABASE_URL) #MySQL Database
 
 SessionLocal = sessionmaker(autocommit = False, autoflush=False , bind = engine)
