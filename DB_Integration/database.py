@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker,declarative_base
+
 
 ### SQLITE3 Database
 SQL_ALCHEMY_DATABASE_URL = 'sqlite:///./todosapp.db'  #SQLITE3 Database

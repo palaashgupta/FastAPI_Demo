@@ -1,6 +1,6 @@
 from fastapi import APIRouter,Depends,HTTPException,status, Path
-from models import Todos, Users
-from database import  SessionLocal
+from ..models import Todos
+from ..database import  SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
@@ -53,7 +53,7 @@ async def read_by_id(users: user_dependency, db: db_dependency, todo_id: int = P
     if todo_model is not None:
         return todo_model
     
-    raise HTTPException(status_code= 404, detail= "ID not found in the Database.")
+    raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= "ID not found in the Database.")
 
 
 ### CREATE NEW RECORD
@@ -62,7 +62,7 @@ async def read_by_id(users: user_dependency, db: db_dependency, todo_id: int = P
 async def create_todo(user: user_dependency, db: db_dependency, todo_request: TodoRequest):
 
     if user is None:
-        raise HTTPException(status_code= 401, detail ='Could not verify the user')
+        raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail ='Could not verify the user')
     
     
     todo_model = Todos(**todo_request.model_dump(), owner_id=user.get('id'))
@@ -79,12 +79,12 @@ async def update_id(user: user_dependency,
                     todo_request: TodoRequest,
                     update_id: int = Path(gt = 0)):
     if user is None:
-        raise HTTPException(status_code= 401, detail ='Could not verify the user')
+        raise HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail ='Could not verify the user')
     
     todo_model = db.query(Todos).filter(Todos.id == update_id).filter(Todos.owner_id == user.get('id')).first()
 
     if todo_model is None:
-        raise HTTPException(status_code = 404, detail =" Todo ID not found in the Database")
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail ="ID not found in the Database.")
     
     todo_model.title = todo_request.title
     todo_model.description = todo_request.description
@@ -106,7 +106,7 @@ async def delete_id(user: user_dependency,
     
     todo_model= db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == user.get('id')).first()
     if todo_model is None:
-        raise HTTPException(status_code=404, detail=" Todo ID not found in the Database")
+        raise HTTPException(status_code=404, detail="ID not found in the Database.")
     
     db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == user.get('id')).delete()
     db.commit()
