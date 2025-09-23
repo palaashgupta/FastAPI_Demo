@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from ..models import Users
 from passlib.context import CryptContext
@@ -47,6 +48,19 @@ def get_db():
 
 
 user_dependency = Annotated[Session, Depends(get_db)]
+templates = Jinja2Templates(directory='DB_Integration/templates')
+
+
+### Pages ###
+@router.get("/login-page")
+def render_login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@router.get("/register-page")
+def render_login_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
+### Endpoints ###
 
 
 def authenticate_user(username:str, password: str, db):
@@ -83,7 +97,20 @@ async def get_current_user(token: Annotated[str, Depends(oath2_bearer)]):
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db: user_dependency, create_user_request: CreateUserRequest):
-    
+    existing_user = db.query(Users).filter(Users.username == create_user_request.username).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already taken",
+        )
+
+    # Check if email exists (optional but common)
+    existing_email = db.query(Users).filter(Users.email == create_user_request.email).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered",
+        )
     create_user_model = Users(
         email = create_user_request.email,
         username = create_user_request.username,
